@@ -1,18 +1,6 @@
 import { Item } from "./types";
 import { Basket } from "./types";
 
-/**
- * Add a unique item to the basket or update the quantity of the item if it already exsists
- *
- * {  
- *  "items": [],
- *  "total": 0,
- *  "postage": 0
- * }
- * 
- * 
- * 
- */
 export default class BasketActions {
 
     /**

@@ -1,4 +1,3 @@
-// Why have you not setup aliasing?
 import LocalStorage from "../../../src/storage/localstorage/localstorage";
 import { Item } from "../../../src/storage/localstorage/types";
 import { Basket } from "../../../src/storage/localstorage/types";
