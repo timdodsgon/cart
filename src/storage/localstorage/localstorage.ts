@@ -1,22 +1,38 @@
-import { Store } from "./types";
-import { Item } from "./types";
-import { Basket } from "./types";
-import BasketActions from "./basketactions";
+import { Store } from "../types";
+import { Item } from "../types";
+import { Basket } from "../types";
+import BasketActions from "../basketactions";
 
-export default class LocalStorage extends BasketActions implements Store<Item, boolean> {
+export default class LocalStorage<I extends Item, B extends Basket> implements Store<I> {
 
-    add(value: Item): boolean {
+    private basketActions = new BasketActions<I, B>();
+    private emptyBasket: B;
+
+    constructor(basket?: B) { 
+        this.emptyBasket = basket || JSON.parse("{ \"items\": [], \"total\": 0, \"postage\": 0 }"); 
+    } 
+
+    add(value: I): boolean {
         try{
-            localStorage.setItem("basket", JSON.stringify(super.addItem(value, this.getBasket())));
+            localStorage.setItem("basket", JSON.stringify(this.basketActions.addItem(value, this.getBasket())));
             return true;
         } catch(error) {
             throw new Error("add: unable to add item to basket " + error);
         }
-    }    
+    }   
+    
+    getItems(): Item[] {
+        try{
+            const basket = this.getBasket();
+            return basket.items;
+        } catch(error) {
+            throw new Error("getItems: unable to retrieve items from basket " + error);
+        }
+    }  
     
     increment(mpn: string, qty: number): boolean {
         try{
-            localStorage.setItem("basket", JSON.stringify(super.incrementItem(mpn, qty, this.getBasket())));
+            localStorage.setItem("basket", JSON.stringify(this.basketActions.incrementItem(mpn, qty, this.getBasket())));
             return true;
         } catch(error) {
             throw new Error("increment: unable to update item quantity " + error);
@@ -25,7 +41,7 @@ export default class LocalStorage extends BasketActions implements Store<Item, b
 
     decrement(mpn: string, qty: number): boolean {
         try{
-            localStorage.setItem("basket", JSON.stringify(super.decrementItem(mpn, qty, this.getBasket())));
+            localStorage.setItem("basket", JSON.stringify(this.basketActions.decrementItem(mpn, qty, this.getBasket())));
             return true;
         } catch(error) {
             throw new Error("increment: unable to update item quantity " + error);
@@ -34,7 +50,7 @@ export default class LocalStorage extends BasketActions implements Store<Item, b
 
     remove(mpn: string): boolean {
         try{
-            localStorage.setItem("basket", JSON.stringify(super.removeItem(mpn, this.getBasket())));
+            localStorage.setItem("basket", JSON.stringify(this.basketActions.removeItem(mpn, this.getBasket())));
             return true;
         } catch(error) {
             throw new Error("remove: unable to remove item from basket " + error);
@@ -50,8 +66,11 @@ export default class LocalStorage extends BasketActions implements Store<Item, b
         }
     } 
 
-    private getBasket(): Basket {
-        const EMPTY_BASKET: string = "{ \"items\": [], \"total\": 0, \"postage\": 0 }";
-        return JSON.parse(localStorage.getItem("basket") || EMPTY_BASKET); 
+    private getBasket(): B {
+        try {
+            return JSON.parse(localStorage.getItem("basket") || JSON.stringify(this.emptyBasket)); 
+        } catch(error) {
+            throw new Error("getBasket: unable to retrieve the basket " + error);
+        }
     }
 }
