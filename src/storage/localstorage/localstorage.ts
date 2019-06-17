@@ -1,7 +1,7 @@
-import { Store } from "../types";
-import { Item } from "../types";
-import { Basket } from "../types";
-import BasketActions from "../basketactions";
+import { Store } from "@src/storage/types";
+import { Item } from "@src/storage/types";
+import { Basket } from "@src/storage/types";
+import BasketActions from "@src/storage/basketactions";
 
 export default class LocalStorage<I extends Item, B extends Basket> implements Store<I> {
 

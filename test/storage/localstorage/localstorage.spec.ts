@@ -1,6 +1,6 @@
-import LocalStorage from "../../../src/storage/localstorage/localstorage";
-import { Item } from "../../../src/storage/types";
-import { Basket } from "../../../src/storage/types";
+import LocalStorage from "@src/storage/localstorage/localstorage";
+import { Item } from "@src/storage/types";
+import { Basket } from "@src/storage/types";
 import 'jest-localstorage-mock';
 
 describe("#BasketActions", () => {

@@ -1,6 +1,6 @@
-import BasketActions from "../../src/storage/basketactions";
-import { Item } from "../../src/storage/types";
-import { Basket } from "../../src/storage/types";
+import BasketActions from "@src/storage/basketactions";
+import { Item } from "@src/storage/types";
+import { Basket } from "@src/storage/types";
 
 describe("#BasketActions", () => {
 

@@ -1,5 +1,5 @@
-import { Item } from "./types";
-import { Basket } from "./types";
+import { Item } from "@src/storage/types";
+import { Basket } from "@src/storage/types";
 
 export default class BasketActions<I extends Item, B extends Basket> {
 
