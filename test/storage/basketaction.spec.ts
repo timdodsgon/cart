@@ -7,7 +7,7 @@ describe("#BasketActions", () => {
     test("Should add item to empty basket", () => {
         // given
         const basketActions = new BasketActions<Item, Basket>();
-        const item: Item = givenItem("123345", 2);
+        const item: Item = givenItem(10, "123345", 2);
         let basket: Basket = givenBasket();
   
         // when
@@ -15,13 +15,14 @@ describe("#BasketActions", () => {
         
         // then
         expect(basket.items.length).toEqual(1);
+        expect(basket.total).toEqual(20);
     })
 
     test("Should add two unique items to empty basket", () => {
         // given
         const basketActions = new BasketActions<Item, Basket>();
-        const item1: Item = givenItem("11111", 2);
-        const item2: Item = givenItem("22222", 2);
+        const item1: Item = givenItem(21, "11111", 2);
+        const item2: Item = givenItem(22.01, "22222", 2);
         let basket: Basket = givenBasket();
   
         // when
@@ -30,13 +31,14 @@ describe("#BasketActions", () => {
         
         // then
         expect(basket.items.length).toEqual(2);
+        expect(basket.total).toEqual(86.02000000000001);
     })
 
     test("Should update quanity when added item alraedy exsits in basket", () => {
         // given
         const basketActions = new BasketActions<Item, Basket>();
-        const item1: Item = givenItem("11111", 2);
-        const item2: Item = givenItem("11111", 2);
+        const item1: Item = givenItem(10, "11111", 2);
+        const item2: Item = givenItem(10, "11111", 2);
         let basket: Basket = givenBasket();
   
         // when
@@ -45,12 +47,13 @@ describe("#BasketActions", () => {
         
         // then
         expect(basket.items.length).toEqual(1);
+        expect(basket.total).toEqual(40);
     }) 
 
     test("Should increment quantity of given item in the basket", () => {
         // given
         const basketActions = new BasketActions<Item, Basket>();
-        const item: Item = givenItem("11111", 2);
+        const item: Item = givenItem(14.56, "11111", 2);
         let basket: Basket = givenBasket();
   
         // when
@@ -60,6 +63,7 @@ describe("#BasketActions", () => {
         // then
         expect(basket.items.length).toEqual(1);
         expect(basket.items[0].qty).toEqual(4);
+        expect(basket.total).toEqual(58.24);
     }) 
 
     test("Should do nothing when increment quantity of a item when the basket is empty", () => {
@@ -77,7 +81,7 @@ describe("#BasketActions", () => {
     test("Should decrement quantity of given item in the basket", () => {
         // given
         const basketActions = new BasketActions<Item, Basket>();
-        const item: Item = givenItem("11111", 2);
+        const item: Item = givenItem(28.45, "11111", 2);
         let basket: Basket = givenBasket();
   
         // when
@@ -87,6 +91,7 @@ describe("#BasketActions", () => {
         // then
         expect(basket.items.length).toEqual(1);
         expect(basket.items[0].qty).toEqual(1);
+        expect(basket.total).toEqual(28.45);
     }) 
 
     test("Should do nothing when decrement quantity of a item when the basket is empty", () => {
@@ -104,7 +109,7 @@ describe("#BasketActions", () => {
     test("Should remove exsisting item from basket", () => {
         // given
         const basketActions = new BasketActions<Item, Basket>();
-        const item: Item = givenItem("11111", 2);
+        const item: Item = givenItem(100.02, "11111", 2);
         let basket: Basket = givenBasket();
   
         // when
@@ -113,6 +118,7 @@ describe("#BasketActions", () => {
         
         // then
         expect(basket.items.length).toEqual(0);
+        expect(basket.total).toEqual(0);
     })
 
     test("Should do nothing when removing item from empty basket", () => {
@@ -128,8 +134,9 @@ describe("#BasketActions", () => {
     })
 })
 
-function givenItem(mpn: string, qty: number): Item {
+function givenItem(price: number, mpn: string, qty: number): Item {
     return {
+        price: price,
         mpn: mpn,
         qty: qty
     };

@@ -12,7 +12,7 @@ describe("#BasketActions", () => {
     test("Should throw error when value for given key in localstorage has invalid JSON strring", () => {
         // given
         const localstorage = new LocalStorage();
-        const item: Item = givenItem("12345", 2);
+        const item: Item = givenItem(12, "12345", 2);
             
         localStorage.__STORE__["basket"] = item;
   
@@ -26,7 +26,7 @@ describe("#BasketActions", () => {
     test("Should add item to basket in localstorage", () => {
         // given
         const storage = new LocalStorage();
-        const item: Item = givenItem("12345", 2);
+        const item: Item = givenItem(10, "12345", 2);
                              
         // when
         const hasItemBeenAddedToBasket: boolean = storage.add(item);
@@ -40,6 +40,7 @@ describe("#BasketActions", () => {
         // then
         expect(basket.items.length).toEqual(1);
         expect(basket.items[0]).toEqual(item);
+        expect(basket.total).toEqual(20);
     })
 
     test("Should add a custom item with optional property present to basket in localstorage", () => {
@@ -48,7 +49,8 @@ describe("#BasketActions", () => {
         interface BigItem extends Item {
             image?: string;
         }
-        const item: BigItem = { mpn: "12345",
+        const item: BigItem = { price: 10,
+                                mpn: "12345",
                                 qty: 2,
                                 image: "url" }
                              
@@ -64,6 +66,7 @@ describe("#BasketActions", () => {
         // then
         expect(basket.items.length).toEqual(1);
         expect(basket.items[0]).toEqual(item);
+        expect(basket.total).toEqual(20);
     })
 
     test("Should add a custom item with optional property missing to basket in localstorage", () => {
@@ -72,7 +75,8 @@ describe("#BasketActions", () => {
         interface BigItem extends Item {
             image?: string;
         }
-        const item: BigItem = { mpn: "12345",
+        const item: BigItem = { price: 10,
+                                mpn: "12345",
                                 qty: 2 }
                              
         // when
@@ -87,6 +91,7 @@ describe("#BasketActions", () => {
         // then
         expect(basket.items.length).toEqual(1);
         expect(basket.items[0]).toEqual(item);
+        expect(basket.total).toEqual(20);
     })
 
     test("Should add item to custom basket with optional property ispresent", () => {
@@ -101,7 +106,7 @@ describe("#BasketActions", () => {
                                      postage: 0,
                                      discountCode: "" };
         const storage = new LocalStorage(actual);
-        const item: Item = givenItem("12345", 2);
+        const item: Item = givenItem(10, "12345", 2);
                              
         // when
         const hasItemBeenAddedToBasket: boolean = storage.add(item);
@@ -116,6 +121,7 @@ describe("#BasketActions", () => {
         expect(returned.items.length).toEqual(1);
         expect(returned.items[0]).toEqual(item);
         expect(returned).toHaveProperty('discountCode')
+        expect(returned.total).toEqual(20);
     })
 
     test("Should add item to custom basket with optional property is missing", () => {
@@ -127,7 +133,7 @@ describe("#BasketActions", () => {
         // given
         let actual: CustumBasket = givenBasket();
         const storage = new LocalStorage(actual);
-        const item: Item = givenItem("12345", 2);
+        const item: Item = givenItem(25.78, "12345", 2);
                              
         // when
         const hasItemBeenAddedToBasket: boolean = storage.add(item);
@@ -142,14 +148,15 @@ describe("#BasketActions", () => {
         expect(returned.items.length).toEqual(1);
         expect(returned.items[0]).toEqual(item);
         expect(returned).not.toHaveProperty('discountCode')
+        expect(returned.total).toEqual(51.56);
     })
 
     test("Should return a list of items from basket", () => {
         // given
         const storage = new LocalStorage();
 
-        const item1: Item = givenItem("11111", 1);
-        const item2: Item = givenItem("22222", 1);
+        const item1: Item = givenItem(10, "11111", 1);
+        const item2: Item = givenItem(12, "22222", 1);
                              
         // when
         const hasItem1BeenAddedToBasket: boolean = storage.add(item1);
@@ -171,8 +178,8 @@ describe("#BasketActions", () => {
     test("Should add two unique items to basket in localstorage", () => {
         // given
         const storage = new LocalStorage();
-        const item1: Item = givenItem("11111", 1);
-        const item2: Item = givenItem("22222", 2);
+        const item1: Item = givenItem(10, "11111", 1);
+        const item2: Item = givenItem(12, "22222", 2);
                              
         // when
         const hasItem1BeenAddedToBasket: boolean = storage.add(item1);
@@ -189,12 +196,13 @@ describe("#BasketActions", () => {
         expect(basket.items.length).toEqual(2);
         expect(basket.items[0]).toEqual(item1);
         expect(basket.items[1]).toEqual(item2);
+        expect(basket.total).toEqual(34);
     })
 
     test("Add item should update item quantity if item exists in basket", () => {
         // given
         const storage = new LocalStorage();
-        const item: Item = givenItem("12345", 2);
+        const item: Item = givenItem(10, "12345", 2);
                              
         // when
         const hasItem1BeenAddedToBasket: boolean = storage.add(item);
@@ -210,6 +218,7 @@ describe("#BasketActions", () => {
         // then
         expect(basket.items.length).toEqual(1);
         expect(basket.items[0].qty).toEqual(4);
+        expect(basket.total).toEqual(40);
     })
 
     test("Increment quantity should do nothing when item does not exists in basket", () => {
@@ -232,7 +241,7 @@ describe("#BasketActions", () => {
     test("Increment quantity should add to quanitty when item exists in basket", () => {
         // given
         const storage = new LocalStorage();
-        const item: Item = givenItem("12345", 2);
+        const item: Item = givenItem(10, "12345", 2);
                              
         // when
         const hasItem1BeenAddedToBasket: boolean = storage.add(item);
@@ -248,12 +257,13 @@ describe("#BasketActions", () => {
         // then
         expect(basket.items.length).toEqual(1);
         expect(basket.items[0].qty).toEqual(4);
+        expect(basket.total).toEqual(40);
     })
 
     test("Decrement quantity should subtract from item quantity when item exists in basket and quanitity to remove is > 1", () => {
         // given
         const storage = new LocalStorage();
-        const item: Item = givenItem("12345", 4);
+        const item: Item = givenItem(23.67, "12345", 4);
                              
         // when
         const hasItem1BeenAddedToBasket: boolean = storage.add(item);
@@ -269,12 +279,13 @@ describe("#BasketActions", () => {
         // then
         expect(basket.items.length).toEqual(1);
         expect(basket.items[0].qty).toEqual(2);
+        expect(basket.total).toEqual(47.34);
     })
 
     test("Decrement quantity should do nothing when item exists in basket and item quanitity is <= than the quantity to remove", () => {
         // given
         const storage = new LocalStorage();
-        const item: Item = givenItem("12345", 4);
+        const item: Item = givenItem(29.78, "12345", 4);
                              
         // when
         expect(storage.add(item)).toBeTruthy();
@@ -284,12 +295,13 @@ describe("#BasketActions", () => {
         const basket: Basket = JSON.parse(localStorage.__STORE__["basket"]);
         expect(basket.items.length).toEqual(1);
         expect(basket.items[0].qty).toEqual(4);
+        expect(basket.total).toEqual(119.12);
     })
 
     test("Remove given item from basket", () => {
         // given
         const storage = new LocalStorage();
-        const item: Item = givenItem("12345", 4);
+        const item: Item = givenItem(21.45, "12345", 4);
                              
         // when
         const hasItemBeenAddedToBasket: boolean = storage.add(item);
@@ -309,12 +321,13 @@ describe("#BasketActions", () => {
         // then
         const updatedBasket: Basket = JSON.parse(localStorage.__STORE__["basket"]);
         expect(updatedBasket.items.length).toEqual(0);
+        expect(basket.total).toEqual(85.8);
     })
 
     test("Clear basket", () => {
         // given
         const storage = new LocalStorage();
-        const item: Item = givenItem("11111", 4);
+        const item: Item = givenItem(10, "11111", 4);
                              
         // when
         const hasItemBeenAddedToBasket: boolean = storage.add(item)
@@ -336,11 +349,13 @@ describe("#BasketActions", () => {
         expect(() => {
             JSON.parse(localStorage.__STORE__["basket"]);
           }).toThrowError("Unexpected token u in JSON at position 0");
+          expect(basket.total).toEqual(40);
     })
 })
 
-function givenItem(mpn: string, qty: number): Item {
+function givenItem(price: number, mpn: string, qty: number): Item {
     return {
+        price: price,
         mpn: mpn,
         qty: qty
     };

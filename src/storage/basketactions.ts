@@ -10,7 +10,7 @@ export default class BasketActions<I extends Item, B extends Basket> {
       return this.incrementItem(value.mpn, value.qty, basket);
     }
     basket.items.push(value);
-    return basket;
+    return this.recalculateBasketTotal(basket);
   }
 
   /**
@@ -18,7 +18,7 @@ export default class BasketActions<I extends Item, B extends Basket> {
    */
   public incrementItem(mpn: string, qty: number, basket: B): B {
     basket.items.forEach((item): number => (mpn === item.mpn ? (item.qty += qty) : 0));
-    return basket;
+    return this.recalculateBasketTotal(basket);
   }
 
   /**
@@ -26,7 +26,7 @@ export default class BasketActions<I extends Item, B extends Basket> {
    */
   public decrementItem(mpn: string, qty: number, basket: B): B {
     basket.items.forEach((item): number => (mpn === item.mpn && item.qty > qty ? (item.qty -= qty) : 0));
-    return basket;
+    return this.recalculateBasketTotal(basket);
   }
 
   /**
@@ -34,7 +34,7 @@ export default class BasketActions<I extends Item, B extends Basket> {
    */
   public removeItem(mpn: string, basket: B): B {
     basket.items = basket.items.filter((item): boolean => item.mpn !== mpn);
-    return basket;
+    return this.recalculateBasketTotal(basket);
   }
 
   /**
@@ -42,5 +42,14 @@ export default class BasketActions<I extends Item, B extends Basket> {
    */
   private isItemInBasket(value: I, basket: B): boolean {
     return basket.items.some((item): boolean => item.mpn === value.mpn);
+  }
+
+  /**
+   * Recalculate total of all items in the basket
+   */
+  private recalculateBasketTotal(basket: B): B {
+    basket.total = 0;
+    basket.items.forEach((item): number => (basket.total += item.price * item.qty));
+    return basket;
   }
 }

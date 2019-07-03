@@ -8,6 +8,7 @@ export interface Store<T> {
 }
 
 export interface Item {
+  price: number;
   mpn: string;
   qty: number;
 }
@@ -16,10 +17,4 @@ export interface Basket {
   items: Item[];
   total: number;
   postage: number;
-}
-
-export interface Product {
-  title: string;
-  price: number;
-  mpn: string;
 }

@@ -10,7 +10,7 @@ export interface BigBasket extends Basket {
   returns?: string;
 }
 
-const item: BigItem = { mpn: '11111', qty: 1, image: 'url' };
+const item: BigItem = { price: 10, mpn: '11111', qty: 1, image: 'url' };
 
 const basket: BigBasket = { items: [], total: 0, postage: 0, returns: '' };
 
