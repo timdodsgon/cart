@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "lint": "eslint ./src/**/*.ts",
+    "lint": "eslint ./**/*.{ts,js}",
     "prepush": "yarn lint && yarn test",
     "tsc": "tsc",
     "jest": "jest",

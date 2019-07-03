@@ -1,4 +1,4 @@
-import LocalStorage from '@src/storage/localstorage/localstorage';
+import SessionStorage from '@src/storage/sessionstorage/sessionstorage';
 import { Item } from '@src/storage/types';
 import { Basket } from '@src/storage/types';
 import 'jest-localstorage-mock';
@@ -21,18 +21,18 @@ function givenBasket(): Basket {
 
 describe('#BasketActions', (): void => {
   beforeEach((): void => {
-    localStorage.clear();
+    sessionStorage.clear();
   });
 
-  test('Should throw error when value for given key in localstorage has invalid JSON strring', (): void => {
+  test('Should throw error when value for given key in sessionstorage has invalid JSON strring', (): void => {
     // given
-    const localstorage = new LocalStorage();
+    const sessionstorage = new SessionStorage();
     const item: Item = givenItem(12, '12345', 2);
 
-    localStorage.__STORE__['basket'] = item;
+    sessionStorage.__STORE__['basket'] = item;
 
     // when
-    const addFunction = (): boolean => localstorage.add(item);
+    const addFunction = (): boolean => sessionstorage.add(item);
 
     // then
     expect(addFunction).toThrowError(
@@ -40,9 +40,9 @@ describe('#BasketActions', (): void => {
     );
   });
 
-  test('Should add item to basket in localstorage', (): void => {
+  test('Should add item to basket in sessionstorage', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
     const item: Item = givenItem(10, '12345', 2);
 
     // when
@@ -52,7 +52,7 @@ describe('#BasketActions', (): void => {
     expect(hasItemBeenAddedToBasket).toBeTruthy();
 
     // when
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(basket.items.length).toEqual(1);
@@ -60,9 +60,9 @@ describe('#BasketActions', (): void => {
     expect(basket.total).toEqual(20);
   });
 
-  test('Should add a custom item with optional property present to basket in localstorage', (): void => {
+  test('Should add a custom item with optional property present to basket in sessionstorage', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
     interface BigItem extends Item {
       image?: string;
     }
@@ -75,7 +75,7 @@ describe('#BasketActions', (): void => {
     expect(hasItemBeenAddedToBasket).toBeTruthy();
 
     // when
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(basket.items.length).toEqual(1);
@@ -83,9 +83,9 @@ describe('#BasketActions', (): void => {
     expect(basket.total).toEqual(20);
   });
 
-  test('Should add a custom item with optional property missing to basket in localstorage', (): void => {
+  test('Should add a custom item with optional property missing to basket in sessionstorage', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
     interface BigItem extends Item {
       image?: string;
     }
@@ -98,7 +98,7 @@ describe('#BasketActions', (): void => {
     expect(hasItemBeenAddedToBasket).toBeTruthy();
 
     // when
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(basket.items.length).toEqual(1);
@@ -114,7 +114,7 @@ describe('#BasketActions', (): void => {
 
     // given
     let actual: CustumBasket = { items: [], total: 0, postage: 0, discountCode: '' };
-    const storage = new LocalStorage(actual);
+    const storage = new SessionStorage(actual);
     const item: Item = givenItem(10, '12345', 2);
 
     // when
@@ -124,7 +124,7 @@ describe('#BasketActions', (): void => {
     expect(hasItemBeenAddedToBasket).toBeTruthy();
 
     // when
-    const returned: CustumBasket = JSON.parse(localStorage.__STORE__['basket']);
+    const returned: CustumBasket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(returned.items.length).toEqual(1);
@@ -141,7 +141,7 @@ describe('#BasketActions', (): void => {
 
     // given
     let actual: CustumBasket = givenBasket();
-    const storage = new LocalStorage(actual);
+    const storage = new SessionStorage(actual);
     const item: Item = givenItem(25.78, '12345', 2);
 
     // when
@@ -151,7 +151,7 @@ describe('#BasketActions', (): void => {
     expect(hasItemBeenAddedToBasket).toBeTruthy();
 
     // when
-    const returned: CustumBasket = JSON.parse(localStorage.__STORE__['basket']);
+    const returned: CustumBasket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(returned.items.length).toEqual(1);
@@ -162,7 +162,7 @@ describe('#BasketActions', (): void => {
 
   test('Should return a list of items from basket', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
 
     const item1: Item = givenItem(10, '11111', 1);
     const item2: Item = givenItem(12, '22222', 1);
@@ -184,9 +184,9 @@ describe('#BasketActions', (): void => {
     expect(returnedItems[1]).toEqual(item2);
   });
 
-  test('Should add two unique items to basket in localstorage', (): void => {
+  test('Should add two unique items to basket in sessionstorage', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
     const item1: Item = givenItem(10, '11111', 1);
     const item2: Item = givenItem(12, '22222', 2);
 
@@ -199,7 +199,7 @@ describe('#BasketActions', (): void => {
     expect(hasItem2BeenAddedToBasket).toBeTruthy();
 
     // when
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(basket.items.length).toEqual(2);
@@ -210,7 +210,7 @@ describe('#BasketActions', (): void => {
 
   test('Add item should update item quantity if item exists in basket', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
     const item: Item = givenItem(10, '12345', 2);
 
     // when
@@ -222,7 +222,7 @@ describe('#BasketActions', (): void => {
     expect(hasItem2BeenAddedToBasket).toBeTruthy();
 
     // when
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(basket.items.length).toEqual(1);
@@ -232,7 +232,7 @@ describe('#BasketActions', (): void => {
 
   test('Increment quantity should do nothing when item does not exists in basket', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
 
     // when
     const hasItemAttemptedToIncrementedItemInBasket: boolean = storage.increment('11111', 2);
@@ -241,7 +241,7 @@ describe('#BasketActions', (): void => {
     expect(hasItemAttemptedToIncrementedItemInBasket).toBeTruthy();
 
     // when
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(basket.items.length).toEqual(0);
@@ -249,7 +249,7 @@ describe('#BasketActions', (): void => {
 
   test('Increment quantity should add to quanitty when item exists in basket', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
     const item: Item = givenItem(10, '12345', 2);
 
     // when
@@ -261,7 +261,7 @@ describe('#BasketActions', (): void => {
     expect(hasItemIncrementedInBasket).toBeTruthy();
 
     // when
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(basket.items.length).toEqual(1);
@@ -271,7 +271,7 @@ describe('#BasketActions', (): void => {
 
   test('Decrement quantity should subtract from item quantity when item exists in basket and quanitity to remove is > 1', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
     const item: Item = givenItem(23.67, '12345', 4);
 
     // when
@@ -283,7 +283,7 @@ describe('#BasketActions', (): void => {
     expect(hasItemIncrementedInBasket).toBeTruthy();
 
     // when
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(basket.items.length).toEqual(1);
@@ -293,7 +293,7 @@ describe('#BasketActions', (): void => {
 
   test('Decrement quantity should do nothing when item exists in basket and item quanitity is <= than the quantity to remove', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
     const item: Item = givenItem(29.78, '12345', 4);
 
     // when
@@ -301,7 +301,7 @@ describe('#BasketActions', (): void => {
     expect(storage.decrement('12345', 4)).toBeTruthy();
 
     // then
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
     expect(basket.items.length).toEqual(1);
     expect(basket.items[0].qty).toEqual(4);
     expect(basket.total).toEqual(119.12);
@@ -309,7 +309,7 @@ describe('#BasketActions', (): void => {
 
   test('Remove given item from basket', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
     const item: Item = givenItem(21.45, '12345', 4);
 
     // when
@@ -319,7 +319,7 @@ describe('#BasketActions', (): void => {
     expect(hasItemBeenAddedToBasket).toBeTruthy();
 
     // when
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(basket.items.length).toEqual(1);
@@ -328,14 +328,14 @@ describe('#BasketActions', (): void => {
     expect(storage.remove(item.mpn)).toBeTruthy();
 
     // then
-    const updatedBasket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const updatedBasket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
     expect(updatedBasket.items.length).toEqual(0);
     expect(basket.total).toEqual(85.8);
   });
 
   test('Clear basket', (): void => {
     // given
-    const storage = new LocalStorage();
+    const storage = new SessionStorage();
     const item: Item = givenItem(10, '11111', 4);
 
     // when
@@ -345,7 +345,7 @@ describe('#BasketActions', (): void => {
     expect(hasItemBeenAddedToBasket).toBeTruthy();
 
     // when
-    const basket: Basket = JSON.parse(localStorage.__STORE__['basket']);
+    const basket: Basket = JSON.parse(sessionStorage.__STORE__['basket']);
 
     // then
     expect(basket.items.length).toEqual(1);
@@ -356,7 +356,7 @@ describe('#BasketActions', (): void => {
     // then
     expect(isBasketClear).toBeTruthy();
     expect((): void => {
-      JSON.parse(localStorage.__STORE__['basket']);
+      JSON.parse(sessionStorage.__STORE__['basket']);
     }).toThrowError('Unexpected token u in JSON at position 0');
     expect(basket.total).toEqual(40);
   });
